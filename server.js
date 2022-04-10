@@ -37,6 +37,16 @@ db.query(`SELECT * FROM candidates WHERE id = 1`, (err, row) => {
     console.log(row);
 });
 
+// deletes a candidate
+// the question mark denotes a placeholder and makes this a prepared statement
+// a prepared statement can execute repeatedly using different values
+db.query(`DELETE FROM candidates WHERE id = ?`, 1, (err, result) => {
+    if(err) {
+        console.log(err);
+    }
+    console.log(result);
+});
+
 // default response for any other request (not found)
 // make sure this is the last route
 app.use((req, res) => {
