@@ -1,6 +1,8 @@
 const express = require('express');
 // import mysql2 package
 const mysql = require('mysql2');
+// import inputCheck() function
+const inputCheck = require('./utils/inputCheck');
 // PORT designation
 const PORT = process.env.PORT || 3001;
 // app expression
@@ -44,7 +46,7 @@ app.get('/api/candidates', (req, res) => {
 });
 
 
-// // returns a single candidate based off id
+// returns a single candidate based off id
 app.get('/api/candidate/:id', (req, res) => {
     const sql = `SELECT * FROM candidates WHERE id = ?`;
     // saves the id as a parameter
@@ -63,9 +65,9 @@ app.get('/api/candidate/:id', (req, res) => {
 });
 
 
-// // deletes a candidate
+// deletes a candidate
 app.delete('/api/candidate/:id', (req, res) => {
-    // // the question mark denotes a placeholder and makes this a prepared statement
+    // the question mark denotes a placeholder and makes this a prepared statement
     // a prepared statement can execute repeatedly using different values
     const sql = `DELETE FROM candidates WHERE id = ?`;
     const params = [req.params.id];
@@ -88,21 +90,32 @@ app.delete('/api/candidate/:id', (req, res) => {
     });    
 });
 
+// creates a candidate
+// use object destructuring to pull the body property out of the request object
+app.post('/api/candidate', ({ body }, res) => {
+    // the inputCheck() function verifies that user info in the request can create a candidate
+    const errors = inputCheck(body, 'first_name', 'last_name', 'industry_connected');
+    if (errors) {
+      res.status(400).json({ error: errors });
+      return;
+    }
+    // saves the sql command as a variable
+    const sql = `INSERT INTO candidates (first_name, last_name, industry_connected)
+                 VALUES (?,?,?)`;
+    // saves the sql parameters to a variable
+    const params = [body.first_name, body.last_name, body.industry_connected];
 
-// // saves the sql command as a variable
-// const sql = `INSERT INTO candidates (id, first_name, last_name, industry_connected)
-//              VALUES (?,?,?,?)`;
-
-// // saves the sql parameters to a variable
-// const params = [1, 'Ronald', 'Firbank', 1];
-
-// // creates a candidate
-// db.query(sql, params, (err, result) => {
-//     if(err) {
-//         console.log(err);
-//     }
-//     console.log(result);
-// });
+    db.query(sql, params, (err, result) => {
+        if (err) {
+            res.status(400).json({ error: err.message });
+            return;
+        }
+        res.json({
+            message: 'success',
+            data: body
+        });
+    });
+});
 
 // default response for any other request (not found)
 // make sure this is the last route
