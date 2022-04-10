@@ -64,14 +64,30 @@ app.get('/api/candidate/:id', (req, res) => {
 
 
 // // deletes a candidate
-// // the question mark denotes a placeholder and makes this a prepared statement
-// // a prepared statement can execute repeatedly using different values
-// db.query(`DELETE FROM candidates WHERE id = ?`, 1, (err, result) => {
-//     if(err) {
-//         console.log(err);
-//     }
-//     console.log(result);
-// });
+app.delete('/api/candidate/:id', (req, res) => {
+    // // the question mark denotes a placeholder and makes this a prepared statement
+    // a prepared statement can execute repeatedly using different values
+    const sql = `DELETE FROM candidates WHERE id = ?`;
+    const params = [req.params.id];
+
+    db.query(sql, params, (err, result) => {
+        if (err) {
+          res.statusMessage(400).json({ error: res.message });
+        } else if (!result.affectedRows) {
+          // if there's no affected rows, there was no candidate by that id
+          res.json({
+            message: 'Candidate not found'
+          });
+        } else {
+          res.json({
+            message: 'deleted',
+            changes: result.affectedRows,
+            id: req.params.id
+          });
+        }
+    });    
+});
+
 
 // // saves the sql command as a variable
 // const sql = `INSERT INTO candidates (id, first_name, last_name, industry_connected)
