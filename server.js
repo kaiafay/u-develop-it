@@ -45,12 +45,23 @@ app.get('/api/candidates', (req, res) => {
 
 
 // // returns a single candidate based off id
-// db.query(`SELECT * FROM candidates WHERE id = 1`, (err, row) => {
-//     if(err) {
-//         console.log(err);
-//     }
-//     console.log(row);
-// });
+app.get('/api/candidate/:id', (req, res) => {
+    const sql = `SELECT * FROM candidates WHERE id = ?`;
+    // saves the id as a parameter
+    const params = [req.params.id];
+  
+    db.query(sql, params, (err, row) => {
+      if (err) {
+        res.status(400).json({ error: err.message });
+        return;
+      }
+      res.json({
+        message: 'success',
+        data: row
+      });
+    });
+});
+
 
 // // deletes a candidate
 // // the question mark denotes a placeholder and makes this a prepared statement
