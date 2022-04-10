@@ -25,8 +25,16 @@ const db = mysql.createConnection(
 // returns all data from the candidates table
 // the query method executes the callback with all the resulting rows that match the query
 // the callback function captures the responses from the query
-db.query(`SELECT * FROM candidates`, (err, rows) => {
-    console.log(rows);
+// db.query(`SELECT * FROM candidates`, (err, rows) => {
+//     console.log(rows);
+// });
+
+// returns a single candidate based off id
+db.query(`SELECT * FROM candidates WHERE id = 1`, (err, row) => {
+    if(err) {
+        console.log(err);
+    }
+    console.log(row);
 });
 
 // default response for any other request (not found)
