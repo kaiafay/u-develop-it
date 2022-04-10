@@ -22,6 +22,13 @@ const db = mysql.createConnection(
     console.log("Connected to the election database.")
 );
 
+// returns all data from the candidates table
+// the query method executes the callback with all the resulting rows that match the query
+// the callback function captures the responses from the query
+db.query(`SELECT * FROM candidates`, (err, rows) => {
+    console.log(rows);
+});
+
 // default response for any other request (not found)
 // make sure this is the last route
 app.use((req, res) => {
