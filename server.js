@@ -25,9 +25,9 @@ const db = mysql.createConnection(
 // returns all data from the candidates table
 // the query method executes the callback with all the resulting rows that match the query
 // the callback function captures the responses from the query
-// db.query(`SELECT * FROM candidates`, (err, rows) => {
-//     console.log(rows);
-// });
+db.query(`SELECT * FROM candidates`, (err, rows) => {
+    console.log(rows);
+});
 
 // returns a single candidate based off id
 db.query(`SELECT * FROM candidates WHERE id = 1`, (err, row) => {
@@ -41,6 +41,21 @@ db.query(`SELECT * FROM candidates WHERE id = 1`, (err, row) => {
 // the question mark denotes a placeholder and makes this a prepared statement
 // a prepared statement can execute repeatedly using different values
 db.query(`DELETE FROM candidates WHERE id = ?`, 1, (err, result) => {
+    if(err) {
+        console.log(err);
+    }
+    console.log(result);
+});
+
+// saves the sql command as a variable
+const sql = `INSERT INTO candidates (id, first_name, last_name, industry_connected)
+             VALUES (?,?,?,?)`;
+
+// saves the sql parameters to a variable
+const params = [1, 'Ronald', 'Firbank', 1];
+
+// creates a candidate
+db.query(sql, params, (err, result) => {
     if(err) {
         console.log(err);
     }
