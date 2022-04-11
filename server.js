@@ -59,7 +59,7 @@ app.get('/api/candidate/:id', (req, res) => {
                  LEFT JOIN parties 
                  ON candidates.party_id = parties.id 
                  WHERE candidates.id = ?`;
-                 
+
     // saves the id as a parameter
     const params = [req.params.id];
   
@@ -75,6 +75,21 @@ app.get('/api/candidate/:id', (req, res) => {
     });
 });
 
+// returns all parties
+app.get('/api/parties', (req, res) => {
+    const sql = `SELECT * FROM parties`;
+
+    db.query(sql, (err, rows) => {
+      if (err) {
+        res.status(500).json({ error: err.message });
+        return;
+      }
+      res.json({
+        message: 'success',
+        data: rows
+      });
+    });
+});
 
 // deletes a candidate
 app.delete('/api/candidate/:id', (req, res) => {
