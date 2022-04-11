@@ -26,7 +26,12 @@ const db = mysql.createConnection(
 
 // returns all candidates
 app.get('/api/candidates', (req, res) => {
-    const sql = `SELECT * FROM candidates`;
+    // the JOIN statement merges the candidates and parties tables
+    const sql = `SELECT candidates.*, parties.name 
+                 AS party_name 
+                 FROM candidates 
+                 LEFT JOIN parties 
+                 ON candidates.party_id = parties.id`;
 
     // the query method executes the callback with all the resulting rows that match the query
     // the callback function captures the responses from the query
@@ -48,7 +53,13 @@ app.get('/api/candidates', (req, res) => {
 
 // returns a single candidate based off id
 app.get('/api/candidate/:id', (req, res) => {
-    const sql = `SELECT * FROM candidates WHERE id = ?`;
+    const sql = `SELECT candidates.*, parties.name 
+                 AS party_name 
+                 FROM candidates 
+                 LEFT JOIN parties 
+                 ON candidates.party_id = parties.id 
+                 WHERE candidates.id = ?`;
+                 
     // saves the id as a parameter
     const params = [req.params.id];
   
