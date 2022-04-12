@@ -1,4 +1,5 @@
 const express = require('express');
+const apiRoutes = require('./routes/apiRoutes');
 // import inputCheck() function
 const inputCheck = require('./utils/inputCheck');
 // import db
@@ -10,6 +11,8 @@ const app = express();
 // express.js middleware
 app.use(express.urlencoded({ extended: false}));
 app.use(express.json());
+// adding the /api prefix here allows us to remove it from the individual route expressions
+app.use('/api', apiRoutes);
 
 // returns all candidates
 app.get('/api/candidates', (req, res) => {
